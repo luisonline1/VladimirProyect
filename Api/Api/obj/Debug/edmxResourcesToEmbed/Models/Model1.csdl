@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="BdCoinsaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="TblSucursale">
+    <Key>
+      <PropertyRef Name="IdSucursal" />
+    </Key>
+    <Property Name="IdSucursal" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="NumSucursal" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+    <Property Name="NombreSucursal" Type="String" MaxLength="40" FixedLength="false" Unicode="false" />
+    <Property Name="DireccionSucursal" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="TblUsuarios" Relationship="Self.FK_TblUsuarios_TblSucursales" FromRole="TblSucursales" ToRole="TblUsuarios" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="TblPerfile">
+    <Key>
+      <PropertyRef Name="IdPerfil" />
+    </Key>
+    <Property Name="IdPerfil" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Perfil" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+    <Property Name="FecAlta" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="TblUsuarios" Relationship="Self.FK_TblUsuarios_TblPerfiles" FromRole="TblPerfiles" ToRole="TblUsuarios" />
+  </EntityType>
+  <EntityType Name="TblUsuario">
+    <Key>
+      <PropertyRef Name="IdUsuario" />
+    </Key>
+    <Property Name="IdUsuario" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="PriNombre" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="SegNombre" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="ApePaterno" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="ApeMaterno" Type="String" MaxLength="15" FixedLength="false" Unicode="false" />
+    <Property Name="Usuario" Type="String" MaxLength="7" FixedLength="false" Unicode="false" />
+    <Property Name="Contraseña" Type="Binary" MaxLength="8000" FixedLength="false" />
+    <Property Name="SucursalId" Type="Int32" />
+    <Property Name="CorreoElectronico" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="FecAlta" Type="DateTime" Precision="3" />
+    <Property Name="PerfilUsuarioId" Type="Int32" />
+    <Property Name="Intento" Type="Int32" />
+    <Property Name="FecUltimoIntento" Type="DateTime" Precision="3" />
+    <Property Name="Bloqueado" Type="Boolean" />
+    <Property Name="Activo" Type="Boolean" />
+    <NavigationProperty Name="TblSucursale" Relationship="Self.FK_TblUsuarios_TblSucursales" FromRole="TblUsuarios" ToRole="TblSucursales" />
+    <NavigationProperty Name="TblPerfile" Relationship="Self.FK_TblUsuarios_TblPerfiles" FromRole="TblUsuarios" ToRole="TblPerfiles" />
+  </EntityType>
+  <Association Name="FK_TblUsuarios_TblSucursales">
+    <End Role="TblSucursales" Type="Self.TblSucursale" Multiplicity="0..1" />
+    <End Role="TblUsuarios" Type="Self.TblUsuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TblSucursales">
+        <PropertyRef Name="IdSucursal" />
+      </Principal>
+      <Dependent Role="TblUsuarios">
+        <PropertyRef Name="SucursalId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TblUsuarios_TblPerfiles">
+    <End Role="TblPerfiles" Type="Self.TblPerfile" Multiplicity="0..1" />
+    <End Role="TblUsuarios" Type="Self.TblUsuario" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TblPerfiles">
+        <PropertyRef Name="IdPerfil" />
+      </Principal>
+      <Dependent Role="TblUsuarios">
+        <PropertyRef Name="PerfilUsuarioId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="BdCoinsa" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="TblSucursales" EntityType="Self.TblSucursale" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="TblPerfiles" EntityType="Self.TblPerfile" />
+    <EntitySet Name="TblUsuarios" EntityType="Self.TblUsuario" />
+    <AssociationSet Name="FK_TblUsuarios_TblSucursales" Association="Self.FK_TblUsuarios_TblSucursales">
+      <End Role="TblSucursales" EntitySet="TblSucursales" />
+      <End Role="TblUsuarios" EntitySet="TblUsuarios" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TblUsuarios_TblPerfiles" Association="Self.FK_TblUsuarios_TblPerfiles">
+      <End Role="TblPerfiles" EntitySet="TblPerfiles" />
+      <End Role="TblUsuarios" EntitySet="TblUsuarios" />
+    </AssociationSet>
+    <FunctionImport Name="SpCreaSucursal">
+      <Parameter Name="NumSucursal" Mode="In" Type="String" />
+      <Parameter Name="NombreSucursal" Mode="In" Type="String" />
+      <Parameter Name="DireccionSucursal" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_alterdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_creatediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="version" Mode="In" Type="Int32" />
+      <Parameter Name="definition" Mode="In" Type="Binary" />
+    </FunctionImport>
+    <FunctionImport Name="sp_dropdiagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(BdCoinsaModel.sp_helpdiagramdefinition_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(BdCoinsaModel.sp_helpdiagrams_Result)">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="sp_renamediagram">
+      <Parameter Name="diagramname" Mode="In" Type="String" />
+      <Parameter Name="owner_id" Mode="In" Type="Int32" />
+      <Parameter Name="new_diagramname" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="sp_upgraddiagrams" />
+    <FunctionImport Name="SpCreaPerfilUsuario">
+      <Parameter Name="Perfil" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="SpCreaUsuario">
+      <Parameter Name="PrimerNombre" Mode="In" Type="String" />
+      <Parameter Name="SegundoNombre" Mode="In" Type="String" />
+      <Parameter Name="ApPaterno" Mode="In" Type="String" />
+      <Parameter Name="ApMaterno" Mode="In" Type="String" />
+      <Parameter Name="Us" Mode="In" Type="String" />
+      <Parameter Name="Psw" Mode="In" Type="String" />
+      <Parameter Name="Perfil" Mode="In" Type="Int32" />
+      <Parameter Name="CorreoElectronico" Mode="In" Type="String" />
+      <Parameter Name="SucursalId" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <ComplexType Name="sp_helpdiagramdefinition_Result">
+    <Property Type="Int32" Name="version" Nullable="true" />
+    <Property Type="Binary" Name="definition" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="sp_helpdiagrams_Result">
+    <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+    <Property Type="Int32" Name="ID" Nullable="false" />
+    <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+    <Property Type="Int32" Name="OwnerID" Nullable="false" />
+  </ComplexType>
+</Schema>
